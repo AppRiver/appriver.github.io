@@ -1,7 +1,38 @@
 <!DOCTYPE html>
 <html>
-<body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
-</body>
+  <head>
+    <title>AppRiver Open Source</title>
+    <link rel="stylesheet" type="text/css" href="assets/reset.css">
+    <link rel="stylesheet" type="text/css" href="assets/grid.css">
+    <link rel="stylesheet" type="text/css" href="assets/style.css">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/strftime.js"></script>
+    <script type="text/javascript" src="assets/RepoList.js"></script>
+  </head>
+  <body>
+    <div id="wrapper" class="grid clearfix">
+      <div id="main" class="grid-1">
+        <h1>AppRiver Open Source</h1>
+      </div>
+
+      <div class="grid grid-3">
+        <div id="statistics" class="grid-1 alpha header">
+          <h1>Statistics</h1>
+          <p>
+            <a href="https://github.com/appriver/repositories"><span id="num-repos"><img src="assets/spinner.gif" /></span> public repos</a>
+            <br>
+            <a href="https://github.com/appriver?tab=members"><span id="num-members"><img src="assets/spinner.gif" /></span> members</a>
+          </p>
+        </div>
+
+        <div id="recently-updated" class="grid-2 omega header">
+          <h1>Recently updated <a href="https://github.com/appriver/repositories">View All on GitHub</a></h1>
+          <ol id="recently-updated-repos"></ol>
+        </div>
+      </div>
+
+      <ol id="repos"></ol>
+    </div>
+  </body>
 </html>
