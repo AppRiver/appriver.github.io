@@ -48,49 +48,47 @@
 			if (result.data && result.data.length > 0) {
 				repos = repos.concat(result.data);
 
-
 				addRepos(repos, page + 1);
 			}else {
-				$(function () {
-					$("#num-repos").text(repos.length);
+				$("#num-repos").text(repos.length);
+				$("#txt-repos").text(repos.length > 1 ? "public repos":"public repo");
 
-					// Convert pushed_at to Date.
-					$.each(repos, function (i, repo) {
-						repo.pushed_at = new Date(repo.pushed_at);
+				// Convert pushed_at to Date.
+				$.each(repos, function (i, repo) {
+					repo.pushed_at = new Date(repo.pushed_at);
 
-						var weekHalfLife  = 1.146 * Math.pow(10, -9);
+					var weekHalfLife  = 1.146 * Math.pow(10, -9);
 
-						var pushDelta    = (new Date) - Date.parse(repo.pushed_at);
-						var createdDelta = (new Date) - Date.parse(repo.created_at);
+					var pushDelta    = (new Date) - Date.parse(repo.pushed_at);
+					var createdDelta = (new Date) - Date.parse(repo.created_at);
 
-						var weightForPush = 1;
-						var weightForWatchers = 1.314 * Math.pow(10, 7);
+					var weightForPush = 1;
+					var weightForWatchers = 1.314 * Math.pow(10, 7);
 
-						repo.hotness = weightForPush * Math.pow(Math.E, -1 * weekHalfLife * pushDelta);
-						repo.hotness += weightForWatchers * repo.watchers / createdDelta;
-					});
+					repo.hotness = weightForPush * Math.pow(Math.E, -1 * weekHalfLife * pushDelta);
+					repo.hotness += weightForWatchers * repo.watchers / createdDelta;
+				});
 
-					// Sort by highest # of watchers.
-					repos.sort(function (a, b) {
-						if (a.hotness < b.hotness) return 1;
-						if (b.hotness < a.hotness) return -1;
-						return 0;
-					});
+				// Sort by highest # of watchers.
+				repos.sort(function (a, b) {
+					if (a.hotness < b.hotness) return 1;
+					if (b.hotness < a.hotness) return -1;
+					return 0;
+				});
 
-					$.each(repos, function (i, repo) {
-						addRepo(repo);
-					});
+				$.each(repos, function (i, repo) {
+					addRepo(repo);
+				});
 
-					// Sort by most-recently pushed to.
-					repos.sort(function (a, b) {
-						if (a.pushed_at < b.pushed_at) return 1;
-						if (b.pushed_at < a.pushed_at) return -1;
-						return 0;
-					});
+				// Sort by most-recently pushed to.
+				repos.sort(function (a, b) {
+					if (a.pushed_at < b.pushed_at) return 1;
+					if (b.pushed_at < a.pushed_at) return -1;
+					return 0;
+				});
 
-					$.each(repos.slice(0, 3), function (i, repo) {
-						addRecentlyUpdatedRepo(repo);
-					});
+				$.each(repos.slice(0, 3), function (i, repo) {
+					addRecentlyUpdatedRepo(repo);
 				});
 			}
 		});
@@ -104,9 +102,11 @@
 			if(console && result.data.message){
 				console.error(result.data.message)
 				$("#num-members").text(0);
+			}else{
+				$("#num-members").text(members.length);
 			}
-
-			$("#num-members").text(members.length);
+			
+			$("#txt-members").text(members.length > 1 ? "members":"member");
 		});
 	});
 
