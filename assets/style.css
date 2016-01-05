@@ -148,6 +148,15 @@ a:hover {
   color: #999;
 }
 
+#rate-limit-exceeded,
+#rate-limit-exceeded:after{
+  display: none;
+}
+
+#rate-limit-exceeded h2{
+  max-width: 100%;
+}
+
 .repo {
   height: 250px;
 }

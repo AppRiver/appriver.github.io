@@ -32,6 +32,16 @@
 		$item.appendTo("#repos");
 	}
 
+	function handleError(err){
+		if(console && err){
+			console.error(err)
+
+			if(err.indexOf("API rate limit exceeded"===0)){
+				$("#rate-limit-exceeded").show()
+			}
+		}
+	}
+
 	function addRepos(repos, page) {
 		repos = repos || [];
 		page = page || 1;
@@ -41,9 +51,9 @@
 						+ "&page="+page;
 
 		$.getJSON(uri, function (result) {
-				if(console && result.data.message){
-					console.error(result.data.message)
-				}
+			if(result.data.message){
+				handleError(result.data.message)
+			}
 
 			if (result.data && result.data.length > 0) {
 				repos = repos.concat(result.data);
@@ -99,8 +109,8 @@
 		$.getJSON("https://api.github.com/orgs/" + orgName + "/members?callback=?", function (result) {
 			var members = result.data;
 
-			if(console && result.data.message){
-				console.error(result.data.message)
+			if(result.data.message){
+				handleError(result.data.message)
 				$("#num-members").text(0);
 			}else{
 				$("#num-members").text(members.length);
