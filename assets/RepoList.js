@@ -61,7 +61,7 @@
 				addRepos(repos, page + 1);
 			}else {
 				$("#num-repos").text(repos.length);
-				$("#txt-repos").text(repos.length > 1 ? "public repos":"public repo");
+				$("#txt-repos").text(repos.length === 1 ? "public repo":"public repos");
 
 				// Convert pushed_at to Date.
 				$.each(repos, function (i, repo) {
@@ -116,7 +116,7 @@
 				$("#num-members").text(members.length);
 			}
 			
-			$("#txt-members").text(members.length > 1 ? "members":"member");
+			$("#txt-members").text(members.length === 1 ? "member" : "members");
 		});
 	});
 
