@@ -7,7 +7,8 @@
 		var $name = $("<a>").attr("href", repo.html_url).text(repo.name);
 		$item.append($("<span>").addClass("name").append($name));
 
-		var $time = $("<a>").attr("href", repo.html_url + "/commits").text(strftime("%h %e, %Y", repo.pushed_at));
+		var formattedDate = new Date(repo.pushed_at).toDateString().replace(/ 0(\d)/, ' $1,');
+		var $time = $("<a>").attr("href", repo.html_url + "/commits").text(formattedDate);
 		$item.append($("<span>").addClass("time").append($time));
 
 		$item.append('<span class="bullet">&sdot;</span>');
