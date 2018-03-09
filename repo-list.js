@@ -1,4 +1,5 @@
 (function ($, undefined) {
+	var listOfRepos = [];
 	var orgName = "appriver";
 
 	function addRecentlyUpdatedRepo (repo) {
@@ -36,14 +37,17 @@
 	function handleError (err) {
 		if (console && err) {
 			console.error(err);
+		}
 
+		if(err) {
+			$("#loading-repos").hide();
 			if (err.indexOf("API rate limit exceeded" === 0)) {
 				$("#rate-limit-exceeded").show();
 			}
 		}
 	}
 
-	function addRepos (repos, page) {
+	function getReposList (repos, page) {
 		repos = repos || [];
 		page = page || 1;
 
@@ -57,7 +61,7 @@
 			if (result.data && result.data.length > 0) {
 				repos = repos.concat(result.data);
 
-				addRepos(repos, page + 1);
+				getReposList(repos, page + 1);
 			} else {
 				$("#num-repos").text(repos.length);
 				$("#txt-repos").text(repos.length === 1 ? "public repo" : "public repos");
@@ -99,12 +103,13 @@
 				$.each(repos.slice(0, 3), function (i, repo) {
 					addRecentlyUpdatedRepo(repo);
 				});
+				listOfRepos = repos;
+				$("#loading-repos").hide();
 			}
 		});
 	}
 
-	$(function () {
-		addRepos();
+	function getMembersList (){
 		$.getJSON("https://api.github.com/orgs/" + orgName + "/members?callback=?", function (result) {
 			var members = result.data;
 
@@ -117,6 +122,56 @@
 
 			$("#txt-members").text(members.length === 1 ? "member" : "members");
 		});
-	});
+	}
 
+	function setupSearch () {
+		var searchResult = listOfRepos; 
+
+		//Update the list of results with the search results
+		var searchBox = $('#search-box');
+
+		searchBox.keyup(function() {
+			searchResult = findMatches(searchBox.val(), listOfRepos);
+			$('#repos').empty();
+			$.each(searchResult, function (i, repo) {
+				addRepo(repo);
+			});
+		});
+
+		function findMatches(query, repos) {
+			if (query === '') {
+				return repos;
+			} else {
+				var options = {
+				findAllMatches: true,
+				threshold: 0.4,
+				location: 0,
+				distance: 100,
+				maxPatternLength: 50,
+				minMatchCharLength: 1,
+				keys: [
+					"name",
+					"language",
+					"description"
+				]
+				};
+				var fuse = new Fuse(repos, options);
+				var result = fuse.search(query);
+
+				// Sort by highest # of watchers.
+				result.sort(function (a, b) {
+				if (a.hotness < b.hotness) return 1;
+				if (b.hotness < a.hotness) return -1;
+				return 0;
+				});
+
+				return result;
+			}
+		}
+	}
+	
+	//Initialize it all!
+	getReposList();
+	getMembersList();
+	setupSearch();
 })(jQuery);
