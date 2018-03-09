@@ -1,7 +1,7 @@
 (function ($, undefined) {
 	var orgName = "appriver";
 
-	function addRecentlyUpdatedRepo(repo) {
+	function addRecentlyUpdatedRepo (repo) {
 		var $item = $("<li>");
 
 		var $name = $("<a>").attr("href", repo.html_url).text(repo.name);
@@ -13,64 +13,62 @@
 
 		$item.append('<span class="bullet">&sdot;</span>');
 
-		var $watchers = $("<a>").attr("href", repo.html_url + "/watchers").text(repo.watchers +  " watcher" +(repo.watchers===1 ? "" : "s"));
+		var $watchers = $("<a>").attr("href", repo.html_url + "/watchers").text(repo.watchers + " watcher" + (repo.watchers === 1 ? "" : "s"));
 		$item.append($("<span>").addClass("watchers").append($watchers));
 
 		$item.append('<span class="bullet">&sdot;</span>');
 
-		var $forks = $("<a>").attr("href", repo.html_url + "/network").text(repo.forks + " fork" +(repo.forks===1 ? "" : "s"));
+		var $forks = $("<a>").attr("href", repo.html_url + "/network").text(repo.forks + " fork" + (repo.forks === 1 ? "" : "s"));
 		$item.append($("<span>").addClass("forks").append($forks));
 
 		$item.appendTo("#recently-updated-repos");
 	}
 
-	function addRepo(repo) {
+	function addRepo (repo) {
 		var $item = $("<li>").addClass("repo grid-1 " + (repo.language || '').toLowerCase());
 		var $link = $("<a>").attr("href", repo.html_url).appendTo($item);
 		$link.append($("<h2>").text(repo.name));
-		if(repo.language != null) $link.append($("<h3>").text(repo.language));
+		if (repo.language !== null) $link.append($("<h3>").text(repo.language));
 		$link.append($("<p>").text(repo.description));
 		$item.appendTo("#repos");
 	}
 
-	function handleError(err){
-		if(console && err){
-			console.error(err)
+	function handleError (err) {
+		if (console && err) {
+			console.error(err);
 
-			if(err.indexOf("API rate limit exceeded"===0)){
-				$("#rate-limit-exceeded").show()
+			if (err.indexOf("API rate limit exceeded" === 0)) {
+				$("#rate-limit-exceeded").show();
 			}
 		}
 	}
 
-	function addRepos(repos, page) {
+	function addRepos (repos, page) {
 		repos = repos || [];
 		page = page || 1;
 
-		var uri = "https://api.github.com/orgs/" + orgName + "/repos?callback=?"
-						+ "&per_page=100"
-						+ "&page="+page;
+		var uri = "https://api.github.com/orgs/" + orgName + "/repos?callback=?&per_page=100&page=" + page;
 
 		$.getJSON(uri, function (result) {
-			if(result.data.message){
-				handleError(result.data.message)
+			if (result.data.message) {
+				handleError(result.data.message);
 			}
 
 			if (result.data && result.data.length > 0) {
 				repos = repos.concat(result.data);
 
 				addRepos(repos, page + 1);
-			}else {
+			} else {
 				$("#num-repos").text(repos.length);
-				$("#txt-repos").text(repos.length === 1 ? "public repo":"public repos");
+				$("#txt-repos").text(repos.length === 1 ? "public repo" : "public repos");
 
 				// Convert pushed_at to Date.
 				$.each(repos, function (i, repo) {
 					repo.pushed_at = new Date(repo.pushed_at);
 
-					var weekHalfLife  = 1.146 * Math.pow(10, -9);
+					var weekHalfLife = 1.146 * Math.pow(10, -9);
 
-					var pushDelta    = (new Date) - Date.parse(repo.pushed_at);
+					var pushDelta = (new Date) - Date.parse(repo.pushed_at);
 					var createdDelta = (new Date) - Date.parse(repo.created_at);
 
 					var weightForPush = 1;
@@ -110,13 +108,13 @@
 		$.getJSON("https://api.github.com/orgs/" + orgName + "/members?callback=?", function (result) {
 			var members = result.data;
 
-			if(result.data.message){
-				handleError(result.data.message)
+			if (result.data.message) {
+				handleError(result.data.message);
 				$("#num-members").text(0);
-			}else{
+			} else {
 				$("#num-members").text(members.length);
 			}
-			
+
 			$("#txt-members").text(members.length === 1 ? "member" : "members");
 		});
 	});
